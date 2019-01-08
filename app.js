@@ -43,14 +43,16 @@ app.post("/webhook", (req, res) => {
       console.log(response.data)
       msg = JSON.stringify(response.data)
       reply(reply_token, msg)
+      res.send(msg);
+      console.log(msg);
     })
   } else {
     reply(reply_token, msg)
+    res.send(msg);
+    console.log(msg);
   }
 
   // res.send(msg)
-  res.send(msg);
-  console.log(msg);
 });
 
 function push(msg) {
