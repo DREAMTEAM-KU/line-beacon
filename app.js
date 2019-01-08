@@ -27,7 +27,7 @@ app.get("/webhook", (req, res) => {
 });
 
 // Reply
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   // reply block
   let msg = ''
   let reply_token = req.body.events[0].replyToken
@@ -37,22 +37,18 @@ app.post("/webhook", (req, res) => {
     msg = req.body.events[0].message.text
   }
 
-  if (msg.includes('@user')) {
-    let id = 1
-    axios.get('http://tesatopgun.thitgorn.com/showbyID/' + id).then((response) => {
-      console.log(response.data)
-      msg = JSON.stringify(response.data)
-      reply(reply_token, msg)
-      res.send(msg);
-      console.log(msg);
-    })
-  } else {
-    reply(reply_token, msg)
-    res.send(msg);
-    console.log(msg);
-  }
-
-  // res.send(msg)
+  try {
+    if (msg.includes('@user')) {
+      let id = 1
+      await axios.get('http://tesatopgun.thitgorn.com/showbyID/' + id).then((response) => {
+        console.log(response.data)
+        msg = JSON.stringify(response.data)
+      })
+    }
+  } catch (e) {}
+  reply(reply_token, msg)
+  res.send(msg);
+  console.log(msg);
 });
 
 function push(msg) {
