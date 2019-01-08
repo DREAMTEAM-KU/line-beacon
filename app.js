@@ -4,11 +4,10 @@ const express = require("express");
 
 const app = express();
 const port = process.env.PORT || 4000;
-const hostname = "127.0.0.1";
+// const hostname = "127.0.0.1";
 const HEADERS = {
   "Content-Type": "application/json",
-  Authorization:
-    "Bearer {EbjJ236mOdGPtHPHR+o4Z0UFMiW3GsSGW1SouCtYa/F0DfcFdvpAjA19XopU0j615lz4O2fhVeuOo+dw9IkiH97t57as5a4p4VDKwawQp4GFDD+oNPUZAD27pjz8QumSPjg1MqQKTNoR7JsAHAuxdQdB04t89/1O/w1cDnyilFU=}"
+  Authorization: "Bearer {EbjJ236mOdGPtHPHR+o4Z0UFMiW3GsSGW1SouCtYa/F0DfcFdvpAjA19XopU0j615lz4O2fhVeuOo+dw9IkiH97t57as5a4p4VDKwawQp4GFDD+oNPUZAD27pjz8QumSPjg1MqQKTNoR7JsAHAuxdQdB04t89/1O/w1cDnyilFU=}"
 };
 
 app.use(
@@ -29,36 +28,27 @@ app.get("/webhook", (req, res) => {
 // Reply
 app.post("/webhook", (req, res) => {
   // reply block
-  let reply_token = "";
-  let msg = "";
-  reply_token = req.body.events[0].replyToken;
+  let msg = ''
+  let reply_token = req.body.events[0].replyToken
   if (req.body.events[0].type == "beacon") {
-    msg = JSON.stringify(req.body.events[0]);
+    msg = JSON.stringify(req.body.events[0])
   } else {
-    msg = req.body.events[0].message.text;
+    msg = req.body.events[0].message.text
   }
-  reply(reply_token, msg);
+  reply(reply_token, msg)
   // res.send(msg)
   res.send(msg);
   console.log(msg);
 });
 
-// app.post('/webhook', (req, res) => { // reply block
-//   let reply_token = req.body.events[0].replyToken
-//   reply(reply_token, 'Hello I love TESA')
-//   res.sendStatus(200)
-// })
-
 function push(msg) {
   let body = JSON.stringify({
     // push body
     to: "U84499a6b6a18dddd28dc255e44a9b669",
-    messages: [
-      {
-        type: "text",
-        text: msg
-      }
-    ]
+    messages: [{
+      type: "text",
+      text: msg
+    }]
   });
   // curl
   curl("push", body);
@@ -67,20 +57,17 @@ function push(msg) {
 function reply(reply_token, msg) {
   let body = JSON.stringify({
     replyToken: reply_token,
-    messages: [
-      {
-        type: "text",
-        text: msg
-      }
-    ]
+    messages: [{
+      type: "text",
+      text: msg
+    }]
   });
   curl("reply", body);
 }
 
 function curl(method, body) {
   console.log("method:" + method);
-  request.post(
-    {
+  request.post({
       url: "https://api.line.me/v2/bot/message/" + method,
       headers: HEADERS,
       body: body
