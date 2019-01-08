@@ -1,6 +1,7 @@
 const bodyParser = require("body-parser");
 const request = require("request");
 const express = require("express");
+const axios = require('axios');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -35,7 +36,18 @@ app.post("/webhook", (req, res) => {
   } else {
     msg = req.body.events[0].message.text
   }
-  reply(reply_token, msg)
+
+  if (msg.includes('@user')) {
+    let id = 1
+    axios.get('http://tesatopgun.thitgorn.com/showbyID/' + id).then((response) => {
+      console.log(response.data)
+      msg = JSON.stringify(response.data)
+      reply(reply_token, msg)
+    })
+  } else {
+    reply(reply_token, msg)
+  }
+
   // res.send(msg)
   res.send(msg);
   console.log(msg);
