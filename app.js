@@ -29,21 +29,19 @@ app.get("/webhook", (req, res) => {
 // Reply
 app.post("/webhook", async (req, res) => {
   // reply block
-  let msg = ''
-  let reply_token = req.body.events[0].replyToken
-  if (req.body.events[0].type == "beacon") {
-    msg = JSON.stringify(req.body.events[0])
-  } else {
-    msg = req.body.events[0].message.text
-  }
-
   try {
-    if (msg.includes('@user')) {
+    let msg = ''
+    let reply_token = req.body.events[0].replyToken
+    if (req.body.events[0].type == "beacon") {
+      msg = JSON.stringify(req.body.events[0])
+    } else if (msg.includes('@user')) {
       let id = 1
       await axios.get('http://tesatopgun.thitgorn.com/showbyID/' + id).then((response) => {
         console.log(response.data)
         msg = JSON.stringify(response.data)
       })
+    } else {
+      msg = req.body.events[0].message.text
     }
   } catch (e) {}
   reply(reply_token, msg)
