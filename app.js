@@ -30,7 +30,7 @@ app.get("/webhook", (req, res) => {
 app.post("/webhook", async (req, res) => {
   // reply block
   let reply_token = req.body.events[0].replyToken
-  let msg = ''
+  let msg = req.body.events[0].message.text
   try {
     if (req.body.events[0].type == "beacon") {
       msg = JSON.stringify(req.body.events[0])
@@ -40,8 +40,6 @@ app.post("/webhook", async (req, res) => {
         console.log(response.data)
         msg = JSON.stringify(response.data)
       })
-    } else {
-      msg = req.body.events[0].message.text
     }
   } catch (e) {}
   reply(reply_token, msg)
