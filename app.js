@@ -29,9 +29,9 @@ app.get("/webhook", (req, res) => {
 // Reply
 app.post("/webhook", async (req, res) => {
   // reply block
+  let reply_token = req.body.events[0].replyToken
   try {
     let msg = ''
-    let reply_token = req.body.events[0].replyToken
     if (req.body.events[0].type == "beacon") {
       msg = JSON.stringify(req.body.events[0])
     } else if (msg.includes('@user')) {
